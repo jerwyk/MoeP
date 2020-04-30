@@ -1,3 +1,10 @@
+/*
+    preforms all the hardware initialization before switching to user mode
+    loader.s will call the bootKernel function to boot the system
+    TODO:
+    put utility functions (printf) to somewhere else
+*/
+
 #include <com/types.h>
 
 static uint8 x = 0, y = 0;
