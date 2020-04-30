@@ -1,5 +1,7 @@
 #include <kernel/gdt.h>
 
+using namespace MoeP::kernel;
+
 GlobalDescriptorTable::GlobalDescriptorTable():
 nullSegmentSelector(0, 0, 0), 
 unusedSegmentSelector(0, 0, 0),
