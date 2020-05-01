@@ -8,6 +8,8 @@
 #include <com/types.h>
 #include <kernel/printf.h>
 
+using namespace MoeP::kernel;
+
 #define VGA_TEXT_MEMORY 0xB8000;
 
 static uint8 x = 0, y = 0;
@@ -27,9 +29,9 @@ extern "C" void callConstructors()
 extern "C" void bootKernel(void* multiboot_structure, uint32 magicNum)
 {
     //clearScreen();
-    MoeP::kernel::printf("Hello World!\n");
-    MoeP::kernel::printf("This is a simple OS.\n");
-    MoeP::kernel::printf("Number test %d%d.\n", -123, 456);
+    printf("Welcome to MoeP!\n");
+    printf("This is a simple OS.\n");
+    printf("Number test %d %#X.\n", -123, 0xFF);
     while(true);
 }
 

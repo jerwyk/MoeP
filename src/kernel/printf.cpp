@@ -1,7 +1,15 @@
 #include <kernel/printf.h>
 
-#define VGA_TEXT_MEMORY 0xB8000;
+#define VGA_TEXT_MEMORY 0xB8000
 
+//flages for formatting
+#define UPPER_CASE      1
+#define ALT_FORM        2
+#define LEFT_JUSTIFY    4
+#define BLANK_SPACE     8
+#define LEFT_PAD        16
+#define FORCE_SIGN      32
+    
 static int x = 0, y = 0;
 static char* printBuf;
 
@@ -12,11 +20,25 @@ void clearScreen();
 void write(const char *str);
 char* itos(int num);
 
-char* itos(char *str, int num)
+char* itos(char *str, int num, int base, int flags)
 {
     //hex digits
-    char *digits = "0123456789abcdef";
-    int base = 10;
+    const char *digits = flags & UPPER_CASE ? "0123456789ABCDEF" : "0123456789abcdef";
+
+    //handle the flags
+    if(flags & ALT_FORM)
+    {
+        switch (base)
+        {
+        case 16:
+            *str++ = '0';
+            *str++ = 'x';
+            break;
+        
+        default:
+            break;
+        }
+    }
 
     //negative numbers
     if(num < 0)
@@ -25,12 +47,14 @@ char* itos(char *str, int num)
         num *= -1;
     }
     int length = 0;
+    asm volatile("xchgw %bx, %bx");
     int tmp = num;
     do
     {
         tmp /= base;
         ++length;
     } while (tmp > 0);
+    
     tmp = length;
     while(length --> 0)
     {
@@ -56,18 +80,50 @@ int MoeP::kernel::vsprintf(char *s, const char *fmt, va_list arg)
     int i = 0;
     char *str;
 
+    int flags = 0;
+
     for(str = s; *fmt; ++fmt)
     {
         //format character
         if(*fmt == '%')
         {
-            ++fmt;
+            //parse flags
+            bool endFlags = false;
+            while(!endFlags)
+            {
+                ++fmt;
+                switch (*fmt)
+                {
+                case '#':
+                    flags |= ALT_FORM; break;
+                case '-':
+                    flags |= LEFT_JUSTIFY; break;  
+                case '+':
+                    flags |= FORCE_SIGN; break;              
+                case '0':
+                    flags |= LEFT_PAD; break; 
+                case ' ':
+                    flags |= BLANK_SPACE; break; 
+                default:
+                    endFlags = true; break;
+                }
+            }
+
+            //parse specifier
             switch (*fmt)
             {
             case 'i':
             case 'd':
-                str = itos(str, va_arg(arg, int32));
-                break;            
+                str = itos(str, va_arg(arg, int), 10, flags);
+                break; 
+            case 'X':
+                flags |= UPPER_CASE;
+            case 'x':
+                str = itos(str, va_arg(arg, int), 16, flags);
+                break;
+            case 'o':
+                str = itos(str, va_arg(arg, int), 8, flags);
+                break;
             default:
                 break;
             }
