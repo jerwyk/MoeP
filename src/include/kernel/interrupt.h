@@ -1,11 +1,8 @@
 #pragma once
 
-#include <com/types.h>
+#include <MoeP/types.h>
 #include <kernel/ports.h>
 #include <kernel/gdt.h>
-#include <com/util.h>
-
-
 
 namespace MoeP
 {

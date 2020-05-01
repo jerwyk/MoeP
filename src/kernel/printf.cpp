@@ -46,28 +46,29 @@ char* itos(char *str, int num, int base, int flags)
         *str++ = '-';
         num *= -1;
     }
+
     int length = 0;
-    asm volatile("xchgw %bx, %bx");
     int tmp = num;
     do
     {
         tmp /= base;
         ++length;
     } while (tmp > 0);
-    
+    //stores the length
     tmp = length;
-    while(length --> 0)
+    while(tmp --> 0)
     {
-        *(str + length) = digits[num % base];
+        *(str + tmp) = digits[num % base];
         num /= base;
     }
-    str += tmp;
+    str += length;
     return str;
 }
 
 int MoeP::kernel::printf(const char *fmt, ...)
 {
     va_list args;
+    asm volatile("xchgw %bx, %bx");
     va_start(args, fmt);
     vprintf(fmt, args);
     va_end(args);

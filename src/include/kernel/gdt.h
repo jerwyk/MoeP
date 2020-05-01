@@ -1,6 +1,6 @@
 #pragma once
 
-#include <com/types.h>
+#include <MoeP/types.h>
 
 namespace MoeP
 {

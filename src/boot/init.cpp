@@ -2,11 +2,13 @@
     preforms all the hardware initialization before switching to user mode
     loader.s will call the bootKernel function to boot the system
     TODO:
-    put utility functions (printf) to somewhere else
+    
 */
 
-#include <com/types.h>
+#include <MoeP/types.h>
 #include <kernel/printf.h>
+#include <kernel/gdt.h>
+#include <kernel/interrupt.h>
 
 using namespace MoeP::kernel;
 
@@ -25,13 +27,32 @@ extern "C" void callConstructors()
     }
 }
 
+extern void kernelMain();
+void shutdown();
 
 extern "C" void bootKernel(void* multiboot_structure, uint32 magicNum)
 {
     //clearScreen();
     printf("Welcome to MoeP!\n");
     printf("This is a simple OS.\n");
-    printf("Number test %d %#X.\n", -123, 0xFF);
-    while(true);
+    //initialization
+    //setup global descriptor table
+    GlobalDescriptorTable gdt = GlobalDescriptorTable();
+    //setup interrupts and interrupt descriptor table
+    InterruptManager interrupt = InterruptManager(&gdt);
+    //initialize hardware
+    
+
+    interrupt.Activate();
+
+    kernelMain();
+
+    shutdown();
+
+}
+
+void shutdown()
+{
+
 }
 

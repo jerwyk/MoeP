@@ -1,6 +1,6 @@
 #pragma once
 
-#include <com/util.h>
+#include <MoeP/types.h>
 #include <stdarg.h>
 
 /*

@@ -4,7 +4,7 @@
     definition of different ports used by the cpu
 */
 
-#include <com/types.h>
+#include <MoeP/types.h>
 
 template<typename T = uint16>
 class Port
