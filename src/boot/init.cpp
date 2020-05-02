@@ -9,7 +9,9 @@
 #include <kernel/printf.h>
 #include <kernel/gdt.h>
 #include <kernel/interrupt.h>
+#include <hardware/keyboard.h>
 
+using namespace MoeP;
 using namespace MoeP::kernel;
 
 #define VGA_TEXT_MEMORY 0xB8000;
@@ -41,7 +43,7 @@ extern "C" void bootKernel(void* multiboot_structure, uint32 magicNum)
     //setup interrupts and interrupt descriptor table
     InterruptManager interrupt = InterruptManager(&gdt);
     //initialize hardware
-    
+    hardware::KeyboardDriver Keyboard(&interrupt);
 
     interrupt.Activate();
 

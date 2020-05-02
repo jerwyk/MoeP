@@ -1,3 +1,7 @@
+// this file defines macros and routines for the cpu to handle interrupts
+// when receives interrupts it will push the interrupt number to the stack 
+// and call the interrupt handler defined in the c++ files
+
 .set IRQ_BASE, 0x20
 
 .data

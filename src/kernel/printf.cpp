@@ -68,7 +68,6 @@ char* itos(char *str, int num, int base, int flags)
 int MoeP::kernel::printf(const char *fmt, ...)
 {
     va_list args;
-    asm volatile("xchgw %bx, %bx");
     va_start(args, fmt);
     vprintf(fmt, args);
     va_end(args);
