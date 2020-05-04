@@ -1,5 +1,12 @@
 #pragma once
 
+#include <MoeP/types.h>
+
+//represents a 8 bit keycode
+//the lower 7 bit represents the actual keycode, where as the highest bit will be 1 if it is an hey release
+typedef uint8 keycode_t;
+#define KEY_RELEASE 0x80
+
 //all the keycode corresponding to keys on the keyboard
 //keycode ranges from 0x01 to 0x7F for key press
 //0x80 to 0xFF is for the corresponding key release
