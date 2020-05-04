@@ -11,7 +11,7 @@ namespace MoeP
 {
     namespace hardware
     {
-        class KeyboardDriver : public kernel::InterruptHandler, hardware::Driver
+        class KeyboardDriver : public kernel::InterruptHandler, public hardware::Driver
         {
         private:
             Port<uint8> dataPort;
