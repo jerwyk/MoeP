@@ -1,0 +1,18 @@
+TODO:
+1. have a working process manager
+2. have a basic file system for at least stdio
+3. a way to send a and recieve messages
+
+
+rework of interrupt handling:
+instead of manually handling all request,
+create a kernel call recieve() to recieve interrupt messages
+when a interrupt handler gets an interrupt, it send a messages to the device driver
+
+or...
+we can just keep all drivers in kernel space lol
+
+process:
+Process scheduler: maintains a process table with one entry per process
+    The entry contains state, program counter, stack pointer, memory alloc, open files, accounting and scheduling, alarms, etc
+    
