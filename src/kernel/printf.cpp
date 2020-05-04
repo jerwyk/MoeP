@@ -1,6 +1,5 @@
 #include <kernel/printf.h>
-
-#define VGA_TEXT_MEMORY 0xB8000
+#include <hardware/console.h>
 
 //flages for formatting
 #define UPPER_CASE      1
@@ -10,14 +9,12 @@
 #define LEFT_PAD        16
 #define FORCE_SIGN      32
     
-static int x = 0, y = 0;
 static char* printBuf;
 
 //this is supposed to be a system call...
 //but thats for later
 void putChar(const char ch);
 void clearScreen();
-void write(const char *str);
 char* itos(int num);
 
 char* itos(char *str, int num, int base, int flags)
@@ -134,9 +131,7 @@ int MoeP::kernel::vsprintf(char *s, const char *fmt, va_list arg)
         }
         
     }
-
-    *str = '\0';
-    return 0;
+static 
 
 }
 
@@ -146,62 +141,6 @@ int MoeP::kernel::vprintf(const char * fmt, va_list arg)
     char s[1024];
     int i = vsprintf(s, fmt, arg);
     //we dont have streams yet..
-    write(s);
+    hardware::ConsoleDriver::kprint(s);
     return i;
-}
-
-
-//-----------------------------------------------------------------------
-void write(const char *str)
-{
-    for(int i = 0; str[i] != '\0'; ++i)
-    {
-        putChar(str[i]);
-    }
-}
-
-void putChar(const char ch)
-{
-    //unsigned short so that one entry is 2 bytes
-    //in ram starting from 0xb8000, for each 2 bytes
-    //the high byte contains the color information
-    //the low byte is the letter to print to the screen
-    uint16 *videoMemory = (uint16*)VGA_TEXT_MEMORY;
-    //detect escape characters
-    switch (ch)
-    {
-        case '\n':
-            ++y;
-            x = 0;
-            break;    
-        default:
-            //only overwrites the low byte
-            videoMemory[80*y+x] = (videoMemory[80*y+x] & 0xFF00) | ch;
-            ++x;
-            break;
-    }
-
-    if(x >= 80)
-    {
-        ++y;
-        x = 0;
-    }
-    if(y >= 25)
-    {
-        clearScreen();
-        x = y = 0;
-    }
-}
-
-void clearScreen()
-{
-    uint16 *videoMemory = (uint16*)VGA_TEXT_MEMORY;
-    for (int y = 0; y < 25; y++)
-    {
-        for (int x = 0; x < 80; x++)
-        {
-            videoMemory[80*y+x] = (videoMemory[80*y+x] & 0xFF00) | ' ';
-        }
-        
-    }  
 }
